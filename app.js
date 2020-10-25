@@ -10,10 +10,8 @@
     checkValidations: function(e){
       e.preventDefault();
       if(formView.title.value === '' || formView.author.value === '' || formView.isbn.value === ''){
-        controller.removeWarningMessage();
         controller.warningMessage('Please fill in all fields', 'error')
       } else {
-        controller.removeWarningMessage();
         controller.addNewBook();
       }
     },
@@ -25,6 +23,7 @@
     },
 
     warningMessage: function(message, className){
+      controller.removeWarningMessage();
       warningView.init(message, className)
     },
 
@@ -35,14 +34,18 @@
     },
 
     removeWarningMessage: function(){
+
       if(document.querySelector('.alert') !== null){
         document.querySelector('.alert').remove();
         clearTimeout(warningView.removeAfterThreeSeconds);
       }
     },
 
-    deleteBook: function(){
-
+    deleteBook: function(e){
+        if(e.target.className === 'delete'){
+          e.target.parentElement.remove();
+          controller.warningMessage('Book deleted successfully', 'success')
+        }
     }
   }
 
@@ -65,6 +68,7 @@
   const resultView = {
     init: function(){
       this.bookList = document.getElementById('book-list');
+      this.bookList.addEventListener('click', controller.deleteBook)
       this.render()
     },
 
@@ -74,7 +78,7 @@
       <td>${formView.title.value}</td>
       <td>${formView.author.value}</td>
       <td>${formView.isbn.value}</td>
-      <td><a href="#" class="delete">X<a></td>
+      <td class="delete">X</td>
       </tr>
       `
     }
