@@ -10,16 +10,18 @@
     checkValidations: function(e){
       e.preventDefault();
       if(formView.title.value === '' || formView.author.value === '' || formView.isbn.value === ''){
+        controller.removeWarningMessage();
         controller.warningMessage('Please fill in all fields', 'error')
       } else {
+        controller.removeWarningMessage();
         controller.addNewBook();
       }
     },
 
     addNewBook: function(){
       resultView.init();
-      controller.warningMessage('Book added successfully', 'success')
       controller.clearAllFields();
+      controller.warningMessage('Book added successfully', 'success')
     },
 
     warningMessage: function(message, className){
@@ -30,6 +32,13 @@
       formView.title.value = '';
       formView.author.value = '';
       formView.isbn.value = '';
+    },
+
+    removeWarningMessage: function(){
+      if(document.querySelector('.alert') !== null){
+        document.querySelector('.alert').remove();
+        clearTimeout(warningView.removeAfterThreeSeconds);
+      }
     },
 
     deleteBook: function(){
@@ -81,24 +90,25 @@
       this.div.appendChild(document.createTextNode(message));
       // Get parent
       this.container = document.querySelector('.container');
-      // Get form
-      // this.form = document.querySelector('#book-form');
 
       this.render();
     },
 
     render: function(){
       // Insert alert
-      if(document.querySelector('.alert') === null){
+      setTimeout(()=>{
         this.container.insertBefore(this.div,formView.bookForm);
-      
-        // Timeout after 3 sec
-        setTimeout(function(){
-          document.querySelector('.alert').remove();
-        }, 3000);
-      }
+      }, 0)
+
+      // Timeout after 3 sec
+      this.removeAfterThreeSeconds = setTimeout(function(){
+        if(document.querySelector('.alert') !== null){
+          document.querySelector('.alert').remove()
+        }
+      }, 3000)
     }
   }
+
 
   controller.init();
 })()
